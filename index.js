@@ -12,11 +12,11 @@ const chats = {}
 
 const startGame = async (chatId) => {
     await bot.sendMessage(chatId, `Сейчас я загадаю цифру от 0 до 9, а ты должен ее угадать!`);
-    const randomNumber = Math.floor(Math.random() * 10)
-    chats[chatId] = randomNumber;
+    chats[chatId] = Math.floor(Math.random() * 10);
     await bot.sendMessage(chatId, 'Отгадывай', gameOptions);
 }
 
+msg.from.last_name = undefined;
 const start = async () => {
 
     try {
@@ -33,6 +33,7 @@ const start = async () => {
     ])
 
     bot.on('message', async msg => {
+        msg.chat = undefined;
         const text = msg.text;
         const chatId = msg.chat.id;
 
@@ -63,7 +64,7 @@ const start = async () => {
             return startGame(chatId)
         }
         const user = await UserModel.findOne({chatId})
-        if (data == chats[chatId]) {
+        if (data === chats[chatId]) {
             user.right += 1;
             await bot.sendMessage(chatId, `Поздравляю, ты отгадал цифру ${chats[chatId]}`, againOptions);
         } else {
